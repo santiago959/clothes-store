@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClothesStore - Dein Online Shop für Kleidung</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">👕 ClothesStore</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products">Produkte</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+                <li><a href="#cart" class="cart-link">🛒 Warenkorb (<span id="cart-count">0</span>)</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Willkommen bei ClothesStore</h1>
+            <p>Entdecke unsere exklusive Kollektion an hochwertiger Kleidung</p>
+            <a href="#products" class="cta-button">Jetzt Shoppen</a>
+        </div>
+    </section>
+
+    <!-- Produkte Section -->
+    <section id="products" class="products">
+        <div class="container">
+            <h2>Unsere Produkte</h2>
+            <div class="products-grid" id="products-grid">
+                <!-- Produkte werden hier durch JavaScript eingefügt -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Warenkorb Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Dein Warenkorb</h2>
+            <div id="cart-items" class="cart-items">
+                <!-- Warenkorb-Artikel werden hier eingefügt -->
+            </div>
+            <div class="cart-summary">
+                <h3>Gesamtpreis: <span id="total-price">0.00</span> CHF</h3>
+                <button id="checkout-btn" class="checkout-button">Zur Kasse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Checkout</h2>
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label>Vorname</label>
+                    <input type="text" id="fname" required>
+                </div>
+                <div class="form-group">
+                    <label>Nachname</label>
+                    <input type="text" id="lname" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefon</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Adresse</label>
+                    <input type="text" id="address" required>
+                </div>
+                <div class="form-group">
+                    <label>Zahlungsart</label>
+                    <select id="payment-method" required>
+                        <option value="">Wähle eine Zahlungsart</option>
+                        <option value="twint">💳 TWINT</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Bestellung abschließen</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Erfolgs-Modal -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content success-content">
+            <h2>✅ Bestellung erfolgreich!</h2>
+            <p>Danke für deine Bestellung!</p>
+            <p>Du wirst in Kürze eine Bestätigung per Email erhalten.</p>
+            <p>TWINT-Zahlungslink wird dir zugesendet.</p>
+            <button id="close-success-btn" class="submit-button">Schließen</button>
+        </div>
+    </div>
+
+    <!-- Kontakt Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Kontakt</h2>
+            <p>Email: info@clothesstore.ch</p>
+            <p>Telefon: +41 XX XXX XXXX</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ClothesStore. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
