@@ -1,0 +1,283 @@
+// Produkte Datenbank
+const products = [
+    {
+        id: 1,
+        name: "Classic T-Shirt",
+        price: 29.99,
+        description: "Bequemes Baumwoll-T-Shirt",
+        emoji: "👕"
+    },
+    {
+        id: 2,
+        name: "Denim Jeans",
+        price: 79.99,
+        description: "Hochwertige Denim Jeans",
+        emoji: "👖"
+    },
+    {
+        id: 3,
+        name: "Sommerhose",
+        price: 49.99,
+        description: "Leichte Hose für den Sommer",
+        emoji: "👖"
+    },
+    {
+        id: 4,
+        name: "Casual Hoodie",
+        price: 59.99,
+        description: "Warmer und gemütlicher Hoodie",
+        emoji: "🧥"
+    },
+    {
+        id: 5,
+        name: "Langarmshirt",
+        price: 34.99,
+        description: "Modernes Langarmshirt",
+        emoji: "👕"
+    },
+    {
+        id: 6,
+        name: "Winterjacke",
+        price: 129.99,
+        description: "Warme Winterjacke für kalte Tage",
+        emoji: "🧥"
+    }
+];
+
+// Warenkorb
+let cart = [];
+
+// DOM Elemente
+const productsGrid = document.getElementById('products-grid');
+const cartModal = document.getElementById('cart-modal');
+const checkoutModal = document.getElementById('checkout-modal');
+const successModal = document.getElementById('success-modal');
+const cartLink = document.querySelector('.cart-link');
+const cartCount = document.getElementById('cart-count');
+const checkoutBtn = document.getElementById('checkout-btn');
+const checkoutForm = document.getElementById('checkout-form');
+const closeButtons = document.querySelectorAll('.close');
+const closeSuccessBtn = document.getElementById('close-success-btn');
+
+// Produkte anzeigen
+function displayProducts() {
+    productsGrid.innerHTML = products.map(product => `
+        <div class="product-card">
+            <div class="product-image">${product.emoji}</div>
+            <div class="product-info">
+                <div class="product-name">${product.name}</div>
+                <div class="product-price">${product.price.toFixed(2)} CHF</div>
+                <div class="product-description">${product.description}</div>
+                <button class="add-to-cart-btn" onclick="addToCart(${product.id})">
+                    🛒 In den Warenkorb
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Zu Warenkorb hinzufügen
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    const cartItem = cart.find(item => item.id === productId);
+
+    if (cartItem) {
+        cartItem.quantity++;
+    } else {
+        cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
+
+    updateCartCount();
+    showNotification(`${product.name} zum Warenkorb hinzugefügt!`);
+}
+
+// Warenkorb aktualisieren
+function updateCart() {
+    const cartItems = document.getElementById('cart-items');
+    
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<p>Dein Warenkorb ist leer</p>';
+        return;
+    }
+
+    cartItems.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-price">${item.price.toFixed(2)} CHF</div>
+            </div>
+            <div class="quantity-control">
+                <button onclick="updateQuantity(${item.id}, -1)">−</button>
+                <span>${item.quantity}</span>
+                <button onclick="updateQuantity(${item.id}, 1)">+</button>
+            </div>
+            <button class="remove-btn" onclick="removeFromCart(${item.id})">Entfernen</button>
+        </div>
+    `).join('');
+
+    updateTotalPrice();
+}
+
+// Menge aktualisieren
+function updateQuantity(productId, change) {
+    const item = cart.find(item => item.id === productId);
+    if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+            removeFromCart(productId);
+        } else {
+            updateCart();
+        }
+    }
+}
+
+// Aus Warenkorb entfernen
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCart();
+    updateCartCount();
+}
+
+// Gesamtpreis aktualisieren
+function updateTotalPrice() {
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    document.getElementById('total-price').textContent = total.toFixed(2);
+}
+
+// Warenkorb-Counter aktualisieren
+function updateCartCount() {
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = count;
+}
+
+// Modal öffnen/schließen
+function openModal(modal) {
+    modal.classList.add('active');
+}
+
+function closeModal(modal) {
+    modal.classList.remove('active');
+}
+
+// Warenkorb öffnen
+cartLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    updateCart();
+    openModal(cartModal);
+});
+
+// Zur Kasse
+checkoutBtn.addEventListener('click', () => {
+    if (cart.length === 0) {
+        alert('Bitte füge Produkte hinzu!');
+        return;
+    }
+    closeModal(cartModal);
+    openModal(checkoutModal);
+});
+
+// Checkout Form absenden
+checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = {
+        firstName: document.getElementById('fname').value,
+        lastName: document.getElementById('lname').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        paymentMethod: document.getElementById('payment-method').value,
+        items: cart,
+        total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+    };
+
+    // Bestellung verarbeiten
+    console.log('Bestellung:', formData);
+    
+    // Hier würde die Verbindung zu einem Backend erfolgen
+    // z.B. um die Bestellung zu speichern und einen TWINT-Link zu generieren
+
+    // Erfolgs-Nachricht anzeigen
+    closeModal(checkoutModal);
+    openModal(successModal);
+
+    // Warenkorb leeren
+    cart = [];
+    updateCartCount();
+    checkoutForm.reset();
+});
+
+// Modal schließen buttons
+closeButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.target.closest('.modal').classList.remove('active');
+    });
+});
+
+closeSuccessBtn.addEventListener('click', () => {
+    closeModal(successModal);
+});
+
+// Modal bei Außenklick schließen
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.classList.remove('active');
+    }
+});
+
+// Benachrichtigung anzeigen
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background-color: #27ae60;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 5px;
+        z-index: 2000;
+        animation: slideIn 0.3s ease-out;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+}
+
+// CSS für Animationen
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+// Seite laden
+document.addEventListener('DOMContentLoaded', () => {
+    displayProducts();
+});
